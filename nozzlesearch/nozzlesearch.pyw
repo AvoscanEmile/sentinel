@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import ttk
 from collections import defaultdict
 import os
+import threading
 
 # Adds the necessary variables and working directory for the program to run.
 os.chdir("C:\\Users\\mxchim2jdesspc\\desktop\\nozzlesearch")
@@ -37,36 +38,49 @@ def fetch_data():
     global nozzle_list, data, counted_data
     nozzle_list.clear()
     data.clear()
+    
     for machine in machine_list:
         api_url = f"http://mxchim0nxapp04/fujiweb/fujimoni/ui/api/McUnitInfo?Machine={machine}"
         try:
             response = requests.get(api_url, timeout=1)
             response.raise_for_status()  # Raises HTTPError for bad responses (4xx and 5xx)
+            
             try:
                 response_json = response.json()
             except ValueError:
                 # Handle JSON decoding error
                 print(f"Error decoding JSON for machine {machine}")
                 continue
+            
             if response_json is None:
                 print(f"Received None for machine {machine}")
                 continue
+            
             unit_info = response_json.get("UnitInfo", {})
             module_list = unit_info.get("Module", [])
+            
             for element in module_list:
                 nozzle_station = element.get("NozzleStation", {})
                 nozzle_list_data = nozzle_station.get("Nozzle", [])
+                
                 for nozzle in nozzle_list_data:
+                    # Ensure nozzle is a dictionary
+                    if not isinstance(nozzle, dict):
+                        print(f"Unexpected data type for nozzle: {type(nozzle)}")
+                        continue
+                    
                     serial = nozzle.get("Serial", "").split()[0]
                     nozzle_info = nozzle_dict.get(serial, serial)
                     job_use = nozzle.get('JobUse')
                     nozzle_position = nozzle.get('NzlPosition')
                     element_no = element.get('@No')
                     nozzle_no = nozzle.get('@No')
+                    
                     if job_use == '0':
                         nozzle_list.append([nozzle_info, [machine_dict.get(machine, 'unknown'), element_no, nozzle_no, False]])
                     elif job_use == '1' and not nozzle_position:
                         nozzle_list.append([nozzle_info, [machine_dict.get(machine, 'unknown'), element_no, nozzle_no, True]])
+        
         except requests.Timeout:
             # Handle request timeout specifically
             print(f"Request timed out for machine {machine}")
@@ -111,9 +125,15 @@ def show_table():
         ttk.Label(frame, text=sublist[2]).grid(row=i+1, column=2)
         ttk.Label(frame, text=sublist[3]).grid(row=i+1, column=3)
 
+def fetch_data_thread():
+    threading.Thread(target=fetch_data).start()
+
 def update_every_minute():
-    fetch_data()
-    root.after(60000, update_every_minute)
+    try:
+        fetch_data_thread()
+        root.after(30000, update_every_minute)
+    except Exception as e:
+        print(f"Error scheduling update: {e}")
 
 # GUI setup
 root = tk.Tk()
@@ -138,9 +158,10 @@ fetch_data()
 update_combobox1()
 
 # Start the periodic update
-root.after(60000, update_every_minute)  # Start the updates every minute
+root.after(30000, update_every_minute)  # Start the updates every minute
 
 root.mainloop()
+
 
 
 	
