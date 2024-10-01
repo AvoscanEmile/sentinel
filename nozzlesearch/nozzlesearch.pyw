@@ -40,7 +40,7 @@ def fetch_data():
     for machine in machine_list:
         api_url = f"http://mxchim0nxapp04/fujiweb/fujimoni/ui/api/McUnitInfo?Machine={machine}"
         try:
-            response = requests.get(api_url, timeout=3)
+            response = requests.get(api_url, timeout=1)
             response.raise_for_status()  # Raises HTTPError for bad responses (4xx and 5xx)
             try:
                 response_json = response.json()
@@ -113,7 +113,7 @@ def show_table():
 
 def update_every_minute():
     fetch_data()
-    root.after(30000, update_every_minute)
+    root.after(60000, update_every_minute)
 
 # GUI setup
 root = tk.Tk()
@@ -138,10 +138,9 @@ fetch_data()
 update_combobox1()
 
 # Start the periodic update
-root.after(30000, update_every_minute)  # Start the updates every minute
+root.after(60000, update_every_minute)  # Start the updates every minute
 
 root.mainloop()
-
 
 
 	
