@@ -40,7 +40,7 @@ A lightweight daemon designed to bypass aggressive global group policies (GPO) o
 * **The Engineering:** Directly interacts with the Windows API via `kernel32\SetThreadExecutionState` (`0x00000002`). By programmatically asserting the `ES_DISPLAY_REQUIRED` flag, it mimics human presence without relying on simulated keystrokes or mouse wiggles.
 * **The Impact:** Prevents critical monitoring dashboards from locking out operators during live production runs.
 
-## Core Engineering Philosophies Demonstrated
+## Core Engineering Philosophies
 
 * **Pragmatic Problem Solving:** Solutions are dictated by physical factory constraints (e.g., frozen UIs, physical tool searches, database crashes), not academic theory.
 * **System Observability:** Creating transparency in undocumented or legacy systems where none previously existed.
