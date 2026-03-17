@@ -11,6 +11,8 @@
 WatchFolder := "Watch/Folder/Path" ; Folder to monitor. An example
 TargetName  := "ProcessingBinary.exe"           ; Target process to govern. An example
 PP          := ProcessExist(TargetName)          ; Get PID
+VolumeTolerance := 30 ; Minimum value for the inspection to get corrected. Drift higher than this is considered unsafe to correct. 
+AreaTolerance := 25 ; Minimum value for the inspection to get corrected. Correlated with Volume, usually lower. 
 
 ; --- Global State & Initialization ---
 OnExit(CleanUp)
@@ -90,7 +92,7 @@ ProcessCSV(FilePath) {
     ; Validation Pass: Check for critical hardware errors
     for LineNum, CurrentRow in Lines {
         Cols := StrSplit(CurrentRow, ",")
-        if (LineNum > 3 && (Cols[4] < 20 || Cols[5] < 10 || Cols[8] == "E.Bridging")) {
+        if (LineNum > 3 && (Cols[4] < VolumeTolerance || Cols[5] < AreaTolerance || Cols[8] == "E.Bridging")) {
             return ; Do not sanitize if board is a legitimate hardware failure
         } 
     }
