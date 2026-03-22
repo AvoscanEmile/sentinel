@@ -50,5 +50,9 @@ A lightweight daemon designed to bypass aggressive global group policies (GPO) o
 
 Each module is self-contained. To explore the code or deploy a specific tool, navigate to its respective directory and review its localized `README.md` for specific configuration, dependencies, and execution instructions.
 
+## Disclaimer
 
+Please note that this repository functions as an architectural outline. While the logic flows and system interactions (e.g., ntdll hooks, IoT ETL pipelines) are functionally accurate to the actual Sentinel framework, the production-grade binaries used in industrial settings are distinct and heavily customized.
+
+Users are advised that direct deployment of these scripts is not recommended. The author assumes no legal responsibility for system instability, hardware damage, or data loss resulting from the use of this reference code.
 
