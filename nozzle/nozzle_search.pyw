@@ -71,7 +71,7 @@ class NozzleDashboard(tk.Tk):
         temp_data = defaultdict(lambda: defaultdict(list))
         
         for machine in MACHINE_LIST:
-            api_url = f"http://mxchim0nxapp04/fujiweb/fujimoni/ui/api/McUnitInfo?Machine={machine}"
+            api_url = f"http://yourserveraddress/fujiweb/fujimoni/ui/api/McUnitInfo?Machine={machine}"
             try:
                 # 1-second timeout keeps the thread agile if a machine is offline
                 response = requests.get(api_url, timeout=1)
