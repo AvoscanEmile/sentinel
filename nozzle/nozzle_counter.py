@@ -15,7 +15,7 @@ def extract_telemetry(machines):
     raw_nozzles = []
     
     for machine in machines:
-        api_url = f"http://mxchim0nxapp04/fujiweb/fujimoni/ui/api/McUnitInfo?Machine={machine}"
+        api_url = f"http://yourserveraddress/fujiweb/fujimoni/ui/api/McUnitInfo?Machine={machine}"
         
         try:
             response = requests.get(api_url, timeout=10) # Added timeout to prevent infinite hangs
